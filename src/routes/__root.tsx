@@ -76,7 +76,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="dark min-h-dvh font-sans text-foreground antialiased">
         {children}
-        <Toaster position="top-center" />
+        <Toaster position="top-center" richColors />
         <Scripts />
       </body>
     </html>
