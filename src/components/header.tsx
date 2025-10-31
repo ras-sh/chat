@@ -34,8 +34,8 @@ export function Header() {
           <div className="absolute top-14 right-0 left-0 border-zinc-800 border-b p-4 shadow-lg">
             <div className="space-y-4">
               <p className="font-sans text-sm text-zinc-300 leading-relaxed">
-                💬 AI chat that runs entirely in your browser using Chrome's built-in AI.
-                No servers, no tracking, complete privacy.
+                💬 AI chat that runs entirely in your browser using Chrome's
+                built-in AI. No servers, no tracking, complete privacy.
               </p>
 
               <Button asChild className="w-full" size="sm">
@@ -74,8 +74,8 @@ export function Header() {
           </div>
 
           <p className="font-sans text-xl text-zinc-300 leading-relaxed">
-            💬 AI chat that runs entirely in your browser using Chrome's built-in AI.
-            No servers, no tracking, complete privacy.
+            💬 AI chat that runs entirely in your browser using Chrome's
+            built-in AI. No servers, no tracking, complete privacy.
           </p>
         </div>
       </header>

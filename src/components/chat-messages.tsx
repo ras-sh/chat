@@ -10,15 +10,9 @@ import {
   MessageAvatar,
   MessageContent,
 } from "~/components/ai-elements/message";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "~/components/ai-elements/reasoning";
 import { Response } from "~/components/ai-elements/response";
 import { Button } from "~/components/ui/button";
 import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
-import { CodeBlock } from "./ai-elements/code-block";
 
 type ChatMessagesProps = {
   messages: ExtendedBuiltInAIUIMessage[];
@@ -65,22 +59,6 @@ export function ChatMessages({
                         <Response key={`${message.id}-${i}`}>
                           {part.text}
                         </Response>
-                      );
-                    case "reasoning":
-                      return (
-                        <Reasoning
-                          className="w-full"
-                          defaultOpen={false}
-                          isStreaming={
-                            status === "streaming" &&
-                            i === message.parts.length - 1 &&
-                            message.id === messages.at(-1)?.id
-                          }
-                          key={`${message.id}-${i}`}
-                        >
-                          <ReasoningTrigger />
-                          <ReasoningContent>{part.text}</ReasoningContent>
-                        </Reasoning>
                       );
                     case "file":
                       if (part.mediaType?.startsWith("image/")) {
@@ -161,11 +139,9 @@ export function ChatMessages({
               >
                 Retry
               </Button>
-              <CodeBlock
-                className="mt-3"
-                code={error.message}
-                language="json"
-              />
+              <pre className="mt-3 overflow-x-auto rounded-md border bg-background p-4 text-foreground text-sm">
+                {error.message}
+              </pre>
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ import { Header } from "~/components/header";
 import { ModelDownloadBanner } from "~/components/model-download-banner";
 import { ClientSideChatTransport } from "~/lib/client-side-chat-transport";
 import { cn } from "~/lib/utils";
+import { useSuggestionsStore } from "~/stores/suggestions-store";
 import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
 export const Route = createFileRoute("/")({
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/")({
 export default function Home() {
   const [input, setInput] = useState("");
   const [files, setFiles] = useState<FileList | undefined>(undefined);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const suggestions = useSuggestionsStore((state) => state.suggestions);
   const [modelDownload, setModelDownload] = useState<{
     status: "downloading" | "complete" | "error";
     progress: number;
@@ -58,12 +59,7 @@ export default function Home() {
             toast.info(dataPart.data.message);
           }
         }
-        // Handle suggestions from the model
-        if (dataPart.type === "data-suggestions") {
-          setSuggestions(dataPart.data);
-        }
       },
-      experimental_throttle: 150,
     });
 
   const isLoading = status !== "ready";

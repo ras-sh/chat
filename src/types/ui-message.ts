@@ -1,7 +1,7 @@
 import type { UIMessage } from "ai";
 
 /**
- * Extended UI message type that includes built-in AI data parts plus suggestions
+ * Extended UI message type that includes built-in AI data parts
  */
 export type ExtendedBuiltInAIUIMessage = UIMessage<
   never,
@@ -15,6 +15,5 @@ export type ExtendedBuiltInAIUIMessage = UIMessage<
       message: string;
       level: "info" | "warning" | "error";
     };
-    suggestions: string[];
   }
 >;

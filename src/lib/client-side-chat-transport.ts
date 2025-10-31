@@ -8,10 +8,10 @@ import {
   type UIMessageChunk,
 } from "ai";
 import { z } from "zod";
+import { useSuggestionsStore } from "~/stores/suggestions-store";
 import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
-const SYSTEM_PROMPT =
-  "You are a helpful AI assistant. Be concise and brief in your responses. Keep answers short and to the point.";
+const SYSTEM_PROMPT = "You are a helpful AI assistant.";
 
 const responseSchema = z.object({
   response: z.string().describe("The text response to the user's message"),
@@ -126,11 +126,8 @@ export class ClientSideChatTransport
     // Send suggestions after the response is complete
     const finalObject = await result.object;
     if (finalObject.suggestions && finalObject.suggestions.length > 0) {
-      writer.write({
-        type: "data-suggestions",
-        id: `suggestions-${Date.now()}`,
-        data: finalObject.suggestions,
-      });
+      // Update Zustand store with suggestions
+      useSuggestionsStore.getState().setSuggestions(finalObject.suggestions);
     }
   }
 
