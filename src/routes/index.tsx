@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import type { BuiltInAIUIMessage } from "@built-in-ai/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -13,7 +14,6 @@ import { ModelDownloadBanner } from "~/components/model-download-banner";
 import { ClientSideChatTransport } from "~/lib/client-side-chat-transport";
 import { cn } from "~/lib/utils";
 import { useSuggestionsStore } from "~/stores/suggestions-store";
-import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -30,7 +30,7 @@ export default function Home() {
   } | null>(null);
 
   const { error, status, sendMessage, messages, regenerate, stop } =
-    useChat<ExtendedBuiltInAIUIMessage>({
+    useChat<BuiltInAIUIMessage>({
       transport: new ClientSideChatTransport(),
       onError(error) {
         toast.error(error.message);

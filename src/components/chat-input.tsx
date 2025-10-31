@@ -1,4 +1,5 @@
 import type { UseChatHelpers } from "@ai-sdk/react";
+import type { BuiltInAIUIMessage } from "@built-in-ai/core";
 import { Paperclip } from "lucide-react";
 import { useRef } from "react";
 import {
@@ -12,7 +13,6 @@ import { Suggestion, Suggestions } from "~/components/ai-elements/suggestion";
 import { FileUpload, type FileUploadRef } from "~/components/file-upload";
 import { Button } from "~/components/ui/button";
 import { useBrowserAISupport } from "~/hooks/use-browser-ai-support";
-import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
 type ChatInputProps = {
   input: string;
@@ -21,8 +21,8 @@ type ChatInputProps = {
   onFilesChange: (files: FileList | undefined) => void;
   onSubmit: () => void;
   isLoading: boolean;
-  status: UseChatHelpers<ExtendedBuiltInAIUIMessage>["status"];
-  stop: UseChatHelpers<ExtendedBuiltInAIUIMessage>["stop"];
+  status: UseChatHelpers<BuiltInAIUIMessage>["status"];
+  stop: UseChatHelpers<BuiltInAIUIMessage>["stop"];
   suggestions: string[];
   onSuggestionClick: (suggestion: string) => void;
   showSuggestions: boolean;

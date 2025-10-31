@@ -1,4 +1,4 @@
-import { builtInAI } from "@built-in-ai/core";
+import { type BuiltInAIUIMessage, builtInAI } from "@built-in-ai/core";
 import {
   type ChatRequestOptions,
   type ChatTransport,
@@ -9,7 +9,6 @@ import {
 } from "ai";
 import { z } from "zod";
 import { useSuggestionsStore } from "~/stores/suggestions-store";
-import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
 const SYSTEM_PROMPT = "You are a helpful AI assistant.";
 
@@ -31,10 +30,10 @@ const responseSchema = z.object({
  * - Proper availability state management
  * - Progress tracking for model downloads
  *
- * @implements {ChatTransport<ExtendedBuiltInAIUIMessage>}
+ * @implements {ChatTransport<BuiltInAIUIMessage>}
  */
 export class ClientSideChatTransport
-  implements ChatTransport<ExtendedBuiltInAIUIMessage>
+  implements ChatTransport<BuiltInAIUIMessage>
 {
   /**
    * Initialize and return the base model.
@@ -186,7 +185,7 @@ export class ClientSideChatTransport
   async sendMessages(
     options: {
       chatId: string;
-      messages: ExtendedBuiltInAIUIMessage[];
+      messages: BuiltInAIUIMessage[];
       abortSignal: AbortSignal | undefined;
     } & {
       trigger: "submit-message" | "submit-tool-result" | "regenerate-message";
@@ -204,7 +203,7 @@ export class ClientSideChatTransport
     // States: "unavailable" | "downloadable" | "available"
     const availability = await model.availability();
     if (availability === "available") {
-      return createUIMessageStream<ExtendedBuiltInAIUIMessage>({
+      return createUIMessageStream<BuiltInAIUIMessage>({
         execute: async ({ writer }) => {
           await this.streamResponse({ model, prompt, writer, abortSignal });
         },
@@ -212,7 +211,7 @@ export class ClientSideChatTransport
     }
 
     // Best practice: Handle model download with progress tracking
-    return createUIMessageStream<ExtendedBuiltInAIUIMessage>({
+    return createUIMessageStream<BuiltInAIUIMessage>({
       execute: async ({ writer }) => {
         try {
           let downloadProgressId: string | undefined;

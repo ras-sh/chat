@@ -1,3 +1,4 @@
+import type { BuiltInAIUIMessage } from "@built-in-ai/core";
 import type { ChatStatus } from "ai";
 import { User } from "lucide-react";
 import {
@@ -12,10 +13,9 @@ import {
 } from "~/components/ai-elements/message";
 import { Response } from "~/components/ai-elements/response";
 import { Button } from "~/components/ui/button";
-import type { ExtendedBuiltInAIUIMessage } from "~/types/ui-message";
 
 type ChatMessagesProps = {
-  messages: ExtendedBuiltInAIUIMessage[];
+  messages: BuiltInAIUIMessage[];
   status: ChatStatus;
   error: Error | undefined;
   onRegenerate: () => void;
