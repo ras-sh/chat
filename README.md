@@ -1,6 +1,6 @@
 # chat.ras.sh
 
-💬 AI chat that runs entirely in your browser. No servers, no tracking, complete privacy.
+💬 AI chat that runs entirely in your browser using Transformers.js. No servers, no tracking, complete privacy.
 
 ## Overview
 
