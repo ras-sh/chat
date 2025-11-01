@@ -29,38 +29,45 @@ export default function Home() {
     message: string;
   } | null>(null);
 
-  const { error, status, sendMessage, messages, regenerate, stop } =
-    useChat<BuiltInAIUIMessage>({
-      transport: new ClientSideChatTransport(),
-      onError(error) {
-        toast.error(error.message);
-      },
-      onData: (dataPart) => {
-        // Handle model download progress
-        if (dataPart.type === "data-modelDownloadProgress") {
-          setModelDownload({
-            status: dataPart.data.status,
-            progress: dataPart.data.progress ?? 0,
-            message: dataPart.data.message,
-          });
-          // Clear the download banner when complete
-          if (dataPart.data.status === "complete") {
-            setTimeout(() => setModelDownload(null), 500);
-          }
-          return;
+  const {
+    error,
+    status,
+    sendMessage,
+    messages,
+    regenerate,
+    stop,
+    setMessages,
+  } = useChat<BuiltInAIUIMessage>({
+    transport: new ClientSideChatTransport(),
+    onError(error) {
+      toast.error(error.message);
+    },
+    onData: (dataPart) => {
+      // Handle model download progress
+      if (dataPart.type === "data-modelDownloadProgress") {
+        setModelDownload({
+          status: dataPart.data.status,
+          progress: dataPart.data.progress ?? 0,
+          message: dataPart.data.message,
+        });
+        // Clear the download banner when complete
+        if (dataPart.data.status === "complete") {
+          setTimeout(() => setModelDownload(null), 500);
         }
-        // Handle transient notifications
-        if (dataPart.type === "data-notification") {
-          if (dataPart.data.level === "error") {
-            toast.error(dataPart.data.message);
-          } else if (dataPart.data.level === "warning") {
-            toast.warning(dataPart.data.message);
-          } else {
-            toast.info(dataPart.data.message);
-          }
+        return;
+      }
+      // Handle transient notifications
+      if (dataPart.type === "data-notification") {
+        if (dataPart.data.level === "error") {
+          toast.error(dataPart.data.message);
+        } else if (dataPart.data.level === "warning") {
+          toast.warning(dataPart.data.message);
+        } else {
+          toast.info(dataPart.data.message);
         }
-      },
-    });
+      }
+    },
+  });
 
   const isLoading = status !== "ready";
 
@@ -94,6 +101,16 @@ export default function Home() {
       });
       setInput("");
       setFiles(undefined);
+    }
+  };
+
+  const handleClearConversation = () => {
+    // Stop any ongoing generation
+    if (status === "submitted" || status === "streaming") {
+      stop();
+      setTimeout(() => setMessages([]), 100);
+    } else {
+      setMessages([]);
     }
   };
 
@@ -134,8 +151,10 @@ export default function Home() {
         <div className="mx-auto w-full max-w-3xl space-y-4 p-4">
           <ChatInput
             files={files}
+            hasMessages={messages.length > 0}
             input={input}
             isLoading={isLoading}
+            onClearConversation={handleClearConversation}
             onFilesChange={setFiles}
             onInputChange={setInput}
             onSubmit={handleSubmit}

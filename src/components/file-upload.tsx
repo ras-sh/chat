@@ -1,10 +1,12 @@
 import { X } from "lucide-react";
-import { type RefObject, useImperativeHandle, useRef } from "react";
+import { type ReactNode, type RefObject, useImperativeHandle } from "react";
+import { useDropzone } from "react-dropzone";
 
 type FileUploadProps = {
   files: FileList | undefined;
   onFilesChange: (files: FileList | undefined) => void;
   disabled?: boolean;
+  children?: ReactNode;
 };
 
 export type FileUploadRef = {
@@ -14,21 +16,42 @@ export type FileUploadRef = {
 export const FileUpload = ({
   files,
   onFilesChange,
+  disabled,
+  children,
   ref,
 }: FileUploadProps & { ref?: RefObject<FileUploadRef | null> }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+      "audio/*": [],
+    },
+    multiple: true,
+    disabled,
+    noClick: true,
+    noKeyboard: true,
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        const dt = new DataTransfer();
+        // Add existing files
+        if (files) {
+          for (const file of Array.from(files)) {
+            dt.items.add(file);
+          }
+        }
+        // Add new files
+        for (const file of acceptedFiles) {
+          dt.items.add(file);
+        }
+        onFilesChange(dt.files);
+      }
+    },
+  });
 
   useImperativeHandle(ref, () => ({
     openFileDialog: () => {
-      fileInputRef.current?.click();
+      open();
     },
   }));
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      onFilesChange(e.target.files);
-    }
-  };
 
   const removeFile = (indexToRemove: number) => {
     if (files) {
@@ -39,28 +62,23 @@ export const FileUpload = ({
         }
       });
       onFilesChange(dt.files);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.files = dt.files;
-      }
     }
   };
 
   return (
-    <>
-      {/* Hidden File Input */}
-      <input
-        accept="image/*,audio/*"
-        className="hidden"
-        multiple
-        onChange={handleFileChange}
-        ref={fileInputRef}
-        type="file"
-      />
+    <div {...getRootProps()} className="relative">
+      <input {...getInputProps()} />
+
+      {/* Drag overlay */}
+      {isDragActive && (
+        <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center rounded-lg border-2 border-orange-300 border-dashed bg-orange-300/10">
+          <p className="font-medium text-lg text-orange-300">Drop files here</p>
+        </div>
+      )}
 
       {/* File Previews */}
       {files && files.length > 0 && (
-        <div className="flex gap-2">
+        <div className="mb-3 flex gap-2">
           {Array.from(files).map((file, index) => (
             <div
               className="group relative overflow-hidden rounded-lg bg-zinc-800/40"
@@ -91,7 +109,10 @@ export const FileUpload = ({
           ))}
         </div>
       )}
-    </>
+
+      {/* Children content (chat input) */}
+      {children}
+    </div>
   );
 };
 
